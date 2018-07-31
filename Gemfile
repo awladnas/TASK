@@ -21,6 +21,10 @@ gem 'jwt'
 # services
 gem 'simple_command'
 
+# authorization
+gem "pundit"
+
+
 
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'

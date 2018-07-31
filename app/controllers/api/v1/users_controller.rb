@@ -20,7 +20,7 @@ module Api
         # store all emails in lowercase to avoid duplicates and case-sensitive login errors:
         @user.email.downcase!
         if @user.save
-          response = { message: 'User created successfully', token: @user.token}
+          response = { message: 'User created successfully'}
           render json: response, status: :created
         else
           render json: @user.errors, status: :bad

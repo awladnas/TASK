@@ -5,19 +5,20 @@ module Api
 
       # GET /lists
       def index
-        @lists = List.all
+        @lists = policy_scope(List)
         render json: @lists
       end
 
       # GET /lists/1
       def show
+        authorize @list
         render json: @list
       end
 
       # POST /lists
       def create
         @list = List.new(list_params)
-
+        authorize @list
         if @list.save
           render json: @list, status: :created, location: @list
         else

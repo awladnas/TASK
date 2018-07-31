@@ -2,6 +2,8 @@ class ApplicationController < ActionController::API
   before_action :authenticate_request
   attr_reader :current_user
 
+  include Pundit
+
   private
 
   def authenticate_request
@@ -14,14 +16,11 @@ class ApplicationController < ActionController::API
   end
 
   # global rescue response
-  rescue_from(
-    ActiveRecord::RecordInvalid,
-    with: :render_unprocessable_entity_response
-  )
-  rescue_from(
-    ActiveRecord::RecordNotFound,
-    with: :render_not_found_response
-  )
+  rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
+
+  rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response
+
+  rescue_from ::Pundit::NotAuthorizedError, with: :render_not_found_response
 
   def render_unprocessable_entity_response(exception)
     msg =
