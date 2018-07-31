@@ -15,6 +15,7 @@
 /.idea
 # Ignore uploaded files in development
 /storage/*
+/config/database.yml
 
 .byebug_history
 
