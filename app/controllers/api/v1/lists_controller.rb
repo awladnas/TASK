@@ -5,7 +5,8 @@ module Api
 
       # GET /lists
       def index
-        @lists = policy_scope(List)
+        @lists = List.includes(:cards)
+        authorize @lists
         render json: @lists
       end
 
@@ -17,10 +18,10 @@ module Api
 
       # POST /lists
       def create
-        @list = List.new(list_params)
+        @list = current_user.own_lists.new(list_params)
         authorize @list
         if @list.save
-          render json: @list, status: :created, location: @list
+          render json: { message: 'List created successfully' }, status: :created
         else
           render json: @list.errors, status: :unprocessable_entity
         end
@@ -28,8 +29,9 @@ module Api
 
       # PATCH/PUT /lists/1
       def update
+        authorize @list
         if @list.update(list_params)
-          render json: @list
+          render json: { message: 'List updated successfully' }, status: :ok
         else
           render json: @list.errors, status: :unprocessable_entity
         end
@@ -37,18 +39,23 @@ module Api
 
       # DELETE /lists/1
       def destroy
-        @list.destroy
+        authorize @list
+        if @list.destroy
+          render json: { message: 'List deleted successfully' }, status: :ok
+        else
+          render json: @list.errors, status: :unprocessable_entity
+        end
       end
 
       private
         # Use callbacks to share common setup or constraints between actions.
         def set_list
-          @list = List.find(params[:id])
+          @list = List.includes(:cards).find(params[:id])
         end
 
         # Only allow a trusted parameter "white list" through.
         def list_params
-          params.require(:list).permit(:title, :created_by)
+          params.permit(:title, :created_by)
         end
     end
   end

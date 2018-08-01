@@ -43,7 +43,8 @@ module Api
       private
         # Use callbacks to share common setup or constraints between actions.
         def set_card
-          @card = Card.find(params[:id])
+          @list = List.includes(:cards).find(params[:list_id])
+          @card = @list.cards.find(params[:id])
         end
 
         # Only allow a trusted parameter "white list" through.

@@ -1,21 +1,29 @@
 class ListPolicy < ApplicationPolicy
-  class Scope < Scope
-    attr_reader :user, :scope
+  attr_reader :user, :list
 
-    def initialize(user, scope)
-      @user  = user
-      @scope = scope
+  def initialize(user, list)
+    @user  = user
+    @list = list
+  end
+
+  def index?
+    if user.admin?
+      list.created_by == user.id
+    else
+      true
     end
+  end
 
-    def resolve
-      if user.admin?
-        scope.all
-      else
-        scope.where(created_by: user.id)
-      end
-    end
+  def create?
+    user.admin?
+  end
 
+  def update?
+    user.admin? && list.created_by == user.id
+  end
 
+  def destroy?
+    user.admin? && list.created_by == user.id
   end
 
 end

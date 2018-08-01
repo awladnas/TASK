@@ -7,9 +7,12 @@ Rails.application.routes.draw do
   end
 
   api_version(1) do
-    resources :cards
-    resources :lists
+    resources :lists do
+      resources :cards
+    end
     post 'signup', to: 'users#signup'
+    post 'admin/signup', to: 'users#signup'
     post 'login', to: 'users#login'
+    delete 'logout', to: 'users#logout'
   end
 end
