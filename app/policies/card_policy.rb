@@ -3,7 +3,7 @@ class CardPolicy < ApplicationPolicy
 
   class Scope < Struct.new(:user, :scope)
     def resolve
-      user.cards
+      user.admin? ? scope.all : user.cards
     end
   end
 
@@ -18,7 +18,7 @@ class CardPolicy < ApplicationPolicy
   end
 
   def create?
-    true || list.created_by == user.id || list.users.pluck(:user_id).include?(user.id)
+    user.admin? || card.list.users.pluck(:user_id).include?(user.id)
   end
 
   def update?
@@ -26,18 +26,10 @@ class CardPolicy < ApplicationPolicy
   end
 
   def destroy?
-    (user.admin? && list.created_by == user.id) || card.created_by == user.id
-  end
-
-  def assign_member?
-    user.admin? && list.created_by == user.id
-  end
-
-  def unassign_member?
-    user.admin? && list.created_by == user.id
+    card.created_by == user.id
   end
 
   def show?
-    true || list.created_by == user.id || list.list_users.pluck(:member_id).include?(user.id)
+    user.admin? || card.list.list_users.pluck(:member_id).include?(user.id)
   end
 end
