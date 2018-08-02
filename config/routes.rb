@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
   api_version(1) do
     resources :lists do
+      post :assign_member, on: :member
+      post :unassign_member, on: :member
       resources :cards
     end
     post 'signup', to: 'users#signup'
