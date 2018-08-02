@@ -15,7 +15,7 @@ module Api
       # GET /lists/1
       def show
         authorize @list
-        render json: @list,include: :cards, status: :ok
+        render json: @list, include: :cards, status: :ok
       end
 
       # POST /lists

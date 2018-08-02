@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       post :unassign_member, on: :member
       resources :cards
     end
+    resources :comments
     post 'signup', to: 'users#signup'
     post 'admin/signup', to: 'users#signup'
     post 'login', to: 'users#login'
