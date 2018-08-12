@@ -7,22 +7,37 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def index?
-    true
+    user.admin? || list_users.pluck(:user_id).include?(user.id)
   end
 
   def create?
-    user.admin? || comment.card.list.list_users.pluck(:user_id).include?(user.id)
+    user.admin? || list_users.pluck(:user_id).include?(user.id)
   end
 
   def update?
-    card.created_by == user.id
+    (user.admin?  && list_owner == user.id) || comment.created_by == user.id
   end
 
   def destroy?
-    card.created_by == user.id
+    (user.admin?  && list_owner == user.id) ||  comment.created_by == user.id
   end
 
   def show?
-    user.admin? || comment.card.list.list_users.pluck(:user_id).include?(user.id)
+    user.admin? || list_users.include?(user.id)
+  end
+
+  # helper methods
+
+  def list_users
+    load_list.list_users.pluck(:user_id)
+  end
+
+  def list_owner
+    load_list.created_by
+  end
+
+  def load_list
+    card = comment.card || Card.find_by(id: comment.card_id)
+    card.list
   end
 end

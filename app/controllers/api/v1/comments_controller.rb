@@ -4,21 +4,22 @@ class Api::V1::CommentsController < ApplicationController
   # GET /api/v1/comments
   def index
     if params[:card_id]
-      @comments = Card.includes(:comments).find(params[:card_id]).comments.root_comments
+      @comments = Card.includes(:comments).find(params[:card_id]).card_comments
     elsif params[:comment_id]
-      @comments = Comment.includes(:replies).find(params[:comment_id]).replies
+      comment = Comment.includes(:replies).find(params[:comment_id])
+      @comments = comment.all_replies(comment)
     else
-      @comments = current_user.cards.last.comments
+      @comments = current_user.cards.last.card_comments
     end
 
-    authorize(@comments)
+    # authorize(@comments)
     render json: @comments, status: :ok
   end
 
   # GET /api/v1/comments/1
   def show
     authorize(@comment)
-    render json: @comment, include: :replies, status: :ok
+    render json: @comment.all_replies(@comment), include: :replies, status: :ok
   end
 
   # POST /api/v1/comments
