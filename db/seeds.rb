@@ -5,7 +5,7 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-admin = User.create! email: 'admin@task.com', password: 'secret'
+admin = User.create! email: 'admin@task.com', password: 'secret', role: 'admin'
 list = List.create! created_by: admin.id, title: 'List 1'
 Card.create! created_by: admin.id, title: 'List 1', list: list
 root = Comment.create! content: 'root', card_id: Card.last.id

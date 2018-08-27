@@ -49,6 +49,6 @@ class ListPolicy < ApplicationPolicy
   end
 
   def show?
-    list.created_by == user.id || list.list_users.pluck(:member_id).include?(user.id)
+    list.created_by == user.id || list.list_users.pluck(:user_id).include?(user.id)
   end
 end
